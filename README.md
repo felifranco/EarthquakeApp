@@ -211,6 +211,22 @@ Utilizaremos los estados de la aplicación principalmente en Redux, el hook de r
 ### Rails Task
 
 ```shell
+rails new earthquake_task --api --database=postgresql
+```
+
+```shell
+bin/rails generate scaffold features features
+```
+
+```shell
+
+```
+
+```shell
+
+```
+
+```shell
 
 ```
 
