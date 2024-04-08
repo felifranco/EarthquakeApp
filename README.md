@@ -29,7 +29,7 @@ Desarrollar una página web simple en HTML5 y Javascript que permita consultar l
     1.  Obtención de datos desde feed y persistencia:
         Desarrollar una Task que permita obtener data sismológica desde el sitio USGS (earthquake.usgs.gov). Este feed entrega data en el formato GeoJSON utilizado para estructuras de datos geográficas, por ejemplo un Feature (un evento sismológico), pero no te preocupes, GeoJSON usa el estándar JSON ;)
 
-        Específicamente se debe obtener desde el feed "Past 30 days" (earthquake.usgs.gov/earthqu... la información de la colección features. Específicamente por cada elemento:
+        Específicamente se debe obtener desde el feed "Past 30 days" (https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson) la información de la colección features. Específicamente por cada elemento:
 
         ```
         `id`,
@@ -211,7 +211,25 @@ Utilizaremos los estados de la aplicación principalmente en Redux, el hook de r
 ### Rails Task
 
 ```shell
-rails new earthquake_task --api --database=postgresql
+rails new earthquake_task --api --skip-active-record
+```
+
+Agregar al Gemfile la referencia a mongoid
+
+```yaml
+gem 'mongoid'
+```
+
+Instalar dependencias
+
+```shell
+bundle install
+```
+
+Generar el archivo de configuración predeterminado con la configuración de Mongoid:
+
+```shell
+bin/rails g mongoid:config
 ```
 
 ```shell
@@ -250,9 +268,9 @@ bin/rails generate scaffold features features
 
 - [Getting Started with Rails](https://guides.rubyonrails.org/getting_started.html)
 - [Ruby installation](https://developer.fedoraproject.org/tech/languages/ruby/ruby-installation.html)
-- []()
 - [Ruby on Rails installation](https://developer.fedoraproject.org/tech/languages/ruby/ror-installation.html)
 - [Using Rails for API-only Applications](https://guides.rubyonrails.org/api_app.html)
 - [How to install Ruby on Rails in Fedora | LINUX](https://www.youtube.com/watch?v=4XclLnEBuRI)
 - [Installing Ruby on Rails on Fedora 38](https://reintech.io/blog/installing-ruby-on-rails-fedora-38)
 - [How To Install Ruby on Rails on Fedora 38](https://idroot.us/install-ruby-on-rails-fedora-38/)
+- [Getting started rails 7](https://www.mongodb.com/docs/mongoid/current/tutorials/getting-started-rails7/)
