@@ -72,8 +72,8 @@ Desarrollar una página web simple en HTML5 y Javascript que permita consultar l
                    "mag_type": String,
                    "title": String,
                    "coordinates": {
-                   "longitude": Decimal,
-                   "latitude": Decimal
+                      "longitude": Decimal,
+                      "latitude": Decimal
                    }
                },
                "links": {
@@ -146,19 +146,6 @@ $ ruby --version
 ruby 3.2.2 (2023-03-30 revision e51014f9c0) [x86_64-linux]
 ```
 
-bundle config set --local path 'vendor/cache'
-
-### Instalación de SQLite
-
-```shell
-sudo dnf install sqlite
-sudo dnf install libsqlite3-ruby
-```
-
-```shell
-sudo dnf install sqlite-devel sqlite-tcl
-```
-
 ### Instalación de Rails
 
 Para Fedora, la instalación de Rails puede ser a través de `RubyGems.org` o de los paquetes oficiales de Fedora. Para este caso se utilizará `RubyGems.org` por ser _el servicio de alojamiento de Gemas de la comunidad de Ruby_. Ejecutamos los siguientes comandos:
@@ -211,7 +198,7 @@ Utilizaremos los estados de la aplicación principalmente en Redux, el hook de r
 ### Rails Task
 
 ```shell
-rails new earthquake_task --api --skip-active-record
+rails new earthquake_back --api --skip-active-record
 ```
 
 Agregar al Gemfile la referencia a mongoid
@@ -236,8 +223,10 @@ bin/rails g mongoid:config
 bin/rails generate scaffold features features
 ```
 
-```shell
+Task para obtener datos del API pública
 
+```shell
+bin/rails generate task api fetchData
 ```
 
 ```shell
