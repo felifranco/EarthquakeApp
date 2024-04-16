@@ -133,6 +133,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.7.3)
     rack (2.2.9)
+    rack-cors (2.0.2)
+      rack (>= 2.0.0)
     rack-test (2.1.0)
       rack (>= 1.3)
     rails (7.0.8.1)
@@ -177,6 +179,10 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    will_paginate (3.3.1)
+    will_paginate_mongoid (2.0.1)
+      mongoid
+      will_paginate (~> 3.0)
     zeitwerk (2.6.13)
 
 PLATFORMS
@@ -192,8 +198,10 @@ DEPENDENCIES
   debug
   mongoid
   puma (~> 5.0)
+  rack-cors
   rails (~> 7.0.8, >= 7.0.8.1)
   tzinfo-data
+  will_paginate_mongoid
 
 RUBY VERSION
    ruby 3.2.2p53

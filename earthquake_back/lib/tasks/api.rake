@@ -12,32 +12,49 @@ namespace :api do
     loading = 0;
     nuevos = 0;
     data['features'].each do |item|
+      
+      properties = item['properties']
+      
       unless existe(item['id'])
-        properties = item['properties']
-        geometry = item['geometry']
-        coordinates = geometry['coordinates']
 
-        feature = Feature.new({
-        type: item['type'],
-        attributess: {
-          external_id: item['id'],
-          magnitude: properties['mag'],
-          place: properties['place'],
-          time: properties['time'],
-          tsunami: properties['tsunami'],
-          mag_type: properties['magType'],
-          title: properties['title'],
-          coordinates: {
-            longitude: coordinates[0],
-            latitude: coordinates[1],
-          }
-        },
-        links: { 
-          external_url: properties['url']
-          }
-        })
-        feature.save
-        nuevos += 1
+        unless ( (properties['title']).blank? and
+        (properties['url']).blank? and
+        (properties['place']).blank? and
+        (properties['magType']).blank? )
+
+          geometry = item['geometry']
+          coordinates = geometry['coordinates']
+          mag = properties['mag']
+          longitude = coordinates[0]
+          latitude = coordinates[1]
+
+          
+          if ( (mag >= -1 and mag <= 10) and
+            (latitude >= -90 and latitude <= 90) and
+            (longitude >= -180 and longitude <= 180) )
+
+            feature = Feature.new({
+              type: item['type'],
+              external_id: item['id'],
+              magnitude: mag,
+              place: properties['place'],
+              time: properties['time'],
+              tsunami: properties['tsunami'],
+              mag_type: properties['magType'],
+              title: properties['title'],
+              coordinates: {
+                longitude: longitude,
+                latitude: latitude,
+              },
+              links: { 
+                external_url: properties['url']
+              }
+            })
+            feature.save
+            #puts "added: #{item['id']}"
+            nuevos += 1
+          end
+        end
       end
       loading += 1
       if (loading % 100) == 0
@@ -48,7 +65,7 @@ namespace :api do
   end
 
   def existe(value)
-    Feature.where('attributess.external_id' => value).exists?
+    Feature.where('external_id' => value).exists?
   end
 
 end

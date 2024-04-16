@@ -3,6 +3,7 @@
 ## TABLA DE CONTENIDO
 
 - [Acerca del proyecto](#acerca-del-proyecto)
+  - [Objetivos](#objetivos)
 - [Ambiente de desarrollo](#ambiente-de-desarrollo)
   - [Sistema Operativo](#sistema-operativo)
   - [Instalación de Ruby](#instalación-de-ruby)
@@ -10,13 +11,23 @@
   - [Instalación de NodeJS](#instalación-de-nodejs)
 - [Creación del proyecto](#creación-del-proyecto)
   - [Vite y React](#vite-y-react)
-  - [Rails Task]()
-- [Ejecución](#ejecución)
+  - [Ruby on Rails](#ruby-on-rails)
+    - [API](#api)
+    - [Task](#task)
+- [EJECUCIÓN](#ejecución)
   - [Línea de comandos](#línea-de-comandos)
+    - [Backend](#backend)
+      - [Ejecutar Task](#ejecutar-task)
+      - [Ejecutar API](#ejecutar-api)
+    - [Frontend](#frontend)
   - [Docker compose](#docker-compose)
 - [Referencias](#referencias)
 
 ## Acerca del proyecto
+
+Este es un proyecto sencillo que cuenta con un frontend con **ReactJS y Vite**, carpeta `earthquake_vite_reactjs` y un backend hecho con **Ruby On Rails**, carpeta `earthquake_back`. El proyecto en ejecución muestra en el frontend una tabla con los valores obtenidos a través de una `Task` y procesados con el backend.
+
+![frontend](./assets/Frontend.png)
 
 ### Objetivos:
 
@@ -129,7 +140,7 @@ Desarrollar una página web simple en HTML5 y Javascript que permita consultar l
 
 ### Sistema Operativo
 
-[documentación oficial](https://guides.rubyonrails.org/getting_started.html)
+El desarrollo se hizo en un equipo local con Fedora Linux 39 (Workstation Edition), versión de kernel Linux 6.6.13-200.fc39.x86_64, por lo que desde la documentación oficial buscaremos la instalación para Fedora siguiendo la [documentación oficial](https://guides.rubyonrails.org/getting_started.html).
 
 ### Instalación de Ruby
 
@@ -187,24 +198,46 @@ Ok to proceed? (y) y
 ✔ Select a variant: › JavaScript + SWC
 ```
 
-Ingresamos a la carpeta recién creada e instalamos Redux:
+Ingresamos a la carpeta recién creada e instalamos Redux y Material UI:
 
 ```shell
-$ npm install @reduxjs/toolkit react-redux
+$ npm install @reduxjs/toolkit react-redux @mui/material
 ```
 
-Utilizaremos los estados de la aplicación principalmente en Redux, el hook de react `useState` también se podría utilizar pero por orden y centralización se prefirió Redux. Y se utiliza `@reduxjs/toolkit` por la [simplicidad](https://redux-toolkit.js.org/introduction/getting-started).
+Utilizaremos los estados de la aplicación principalmente en Redux, el hook de react `useState` también se podría utilizar pero por orden y centralización se prefirió Redux. Y se utiliza `@reduxjs/toolkit` por la [simplicidad](https://redux-toolkit.js.org/introduction/getting-started). También se utilizarán los componentes de [Material UI](https://mui.com/material-ui/).
 
-### Rails Task
+### Ruby on Rails
+
+#### API
+
+Creamos un nuevo proyecto Rails con los parámetros de nombre, `--api` y `--skip-active-record` porque se utilizará la gema `mongoid` en su lugar.
 
 ```shell
 rails new earthquake_back --api --skip-active-record
 ```
 
-Agregar al Gemfile la referencia a mongoid
+Ingresar a la nueva carpeta del backend
+
+```shell
+cd earthquake_back
+```
+
+Agregar al [Gemfile](earthquake_back/Gemfile) las siguientes referencias. `mongoid`:
 
 ```yaml
 gem 'mongoid'
+```
+
+Para la paginación se utilizará `will_paginate_mongoid`
+
+```shell
+gem "will_paginate_mongoid"
+```
+
+Y para el manejo de CORS se usará `rack-cors`
+
+```shell
+gem "rack-cors"
 ```
 
 Instalar dependencias
@@ -219,39 +252,83 @@ Generar el archivo de configuración predeterminado con la configuración de Mon
 bin/rails g mongoid:config
 ```
 
+Esto creó el archivo [mongoid.yml](earthquake_back/config/mongoid.yml).
+
+Crear el recurso para el procesamiento de las features
+
 ```shell
 bin/rails generate scaffold features features
 ```
 
-Task para obtener datos del API pública
+Modificar el controlador que se encuentra en [earthquake_back/app/controllers/features_controller.rb](earthquake_back/app/controllers/features_controller.rb) para devolver la información en el formato que se solicita.
+
+#### Task
+
+Por último creamos una _Task_ que obtendrá los datos del API pública
 
 ```shell
 bin/rails generate task api fetchData
 ```
 
-```shell
+Modificar el contenido de la _Task_ para que cumpla su proposito, el archivo se encuentra en [earthquake_back/lib/tasks/api.rake](earthquake_back/lib/tasks/api.rake).
 
-```
-
-```shell
-
-```
-
-## Ejecución
+## EJECUCIÓN
 
 ### Línea de comandos
+
+#### Backend
+
+**IMPORTANTE:** Antes de iniciar es necesario tener una base de datos MongoDB instalada y corriendo, configurar los datos en el archivo [earthquake_back/config/mongoid.yml](earthquake_back/config/mongoid.yml).
+
+Ingresamos a la carpeta del backend
+
+```shell
+cd earthquake_back
+```
+
+##### Ejecutar Task
+
+Ejecutamos la tarea `fetchData` para obtener la información de la API pública y almacenarlos en nuestra base de datos.
+
+```shell
+$ rake api:fetchData
+Fetching data................................................................................................ Insertados: 9364.
+```
+
+##### Ejecutar API
+
+Iniciamos nuestra API con el siguiente comando:
+
+```shell
+bin/rails server
+```
+
+De forma predeterminada el proyecto se ejecuta en `http://localhost:3000`.
+
+#### Frontend
+
+Creamos nuestro archivo `.env`
+
+```dotenv
+VITE_APP_PORT=5000
+VITE_FEATURES_BACKEND=http://localhost:3000
+```
+
+Instalamos las dependencias
+
+```shell
+npm install
+```
+
+Ejecutamos el proyecto con:
+
+```shell
+npm run dev
+```
 
 ### Docker compose
 
 [earthquake_vite_reactjs/Dockerfile](earthquake_vite_reactjs/Dockerfile)
-
-```shell
-
-```
-
-```shell
-
-```
 
 # Referencias
 

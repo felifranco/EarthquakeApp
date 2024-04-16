@@ -3,14 +3,52 @@ class FeaturesController < ApplicationController
 
   # GET /features
   def index
-    @features = Feature.all
+    #params
+    pagina_actual = 1
+    por_pagina = 10
+    mag_type = ""
 
-    render json: {data: @features, pagination: []}
-  end
+    if defined?(params[:page]) && params[:page]
+      pagina_actual = params[:page].to_i
+    end
 
-  # GET /features/1
-  def show
-    render json: @feature
+    if defined?(params[:per_page]) && params[:per_page]
+      por_pagina = params[:per_page].to_i
+    end
+
+    if defined?(params[:mag_type]) && params[:mag_type]
+      mag_type = params[:mag_type]
+    end
+
+    variable = "value"
+
+    puts "variable unless (value) = -#{variable}- : #{variable.blank?}"
+
+    unless true and variable.blank?
+      puts "UNLESS"
+    end
+    
+    @features = []
+    if mag_type.in?(["md", "ml", "ms", "mw", "me", "mi", "mb", "mlg"])
+      @features = Feature.where(mag_type: mag_type)
+    else
+      @features = Feature.all
+    end
+
+    total_documents = @features.size
+    total_pages = total_documents / por_pagina
+
+    puts "total_documents: #{@features.size}"
+    puts "total_pages: #{total_pages}"
+
+    render json: {
+      data: @features.paginate(page: pagina_actual, per_page: por_pagina),
+      pagination: {
+        current_page: pagina_actual,
+        total: total_pages + 1,
+        per_page: por_pagina
+      }
+    }
   end
 
   # POST /features
@@ -23,21 +61,7 @@ class FeaturesController < ApplicationController
       render json: @feature.errors, status: :unprocessable_entity
     end
   end
-
-  # PATCH/PUT /features/1
-  def update
-    if @feature.update(feature_params)
-      render json: @feature
-    else
-      render json: @feature.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /features/1
-  def destroy
-    @feature.destroy
-  end
-
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_feature
